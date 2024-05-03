@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../frontend/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="icon" href="/frontend/img/favicon1.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">    
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <title>Home</title>
+  
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+</head>
+
+<body>  
+<img  class="LogoD "src="../frontend/img/DATARAISE.png">
+<div class="page-wrapper toggled">
+  <nav id="sidebar" class="sidebar-wrapper">
+    <div class="sidebar-content">
+      <div class="sidebar-menu">
+        <ul>
+              <li> <a class="sidebar-dropdown" href="/home"><i class="fas fa-atom"></i><span>HOME</span></a></li> 
+              <li> <a class="sidebar-dropdown" href="/overview"><i class="fas fa-atom"></i><span>OverView Dashboard</span></a></li>
+                    <li class="sidebar-dropdown">
+                      <a href="#"><i class="fa fa-tachometer-alt"></i><span>Volet Historique</span></a>
+                      <div class="sidebar-submenu">
+                        <ul>
+                          <li>
+                            <a href="/dashboard_execution">Overview Historique</a>
+                          </li>
+                          <li>
+                            <a href="/details_execution">Détails Historique</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </li>
+                    <li class="sidebar-dropdown">
+                      <a href="#"><i class="fa fa-tachometer-alt"></i><span>Volet Volumetrie</span></a>
+                      <div class="sidebar-submenu">
+                        <ul>
+                          <li>
+                            <a href="/dashboard_volumetrie">Overview Volumetrie</a>
+                          </li>
+                          <li>
+                            <a href="/details_volumetrie">Détails Volumetrie</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </li>
+                    <li class="sidebar-dropdown">
+                      <a href="#"><i class="fa fa-tachometer-alt"></i><span>Volet logs</span></a>
+                      <div class="sidebar-submenu">
+                        <ul>
+                          <li>
+                            <a href="/dashboard_log">Overview Logs</a>
+                          </li>
+                          <li>
+                            <a href="/details_logs">Détails Logs</a>
+                          </li>
+                          <li>
+                            <a href="/details_des_logs">Details Message Logs</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </li>
+                  
+                    <li class="sidebar-dropdown">
+                      <a href="#"><i class="fas fa-atom"></i><span>Prediction</span></a>
+                      <div class="sidebar-submenu">
+                       <ul>
+                           <li>
+                             <a href="/prediction">Prédiction Statut</a>
+                           </li>
+                           <li>
+                             <a href="/prédiction_flux">Prédiction Flux traités</a>
+                           </li>
+                       </ul>
+                     </div>
+                   </li> 
+              
+              <li><a class="sidebar-dropdown" href="/users"><i class="fas fa-users"></i><span>Gestion des utilisateurs</span></a></li>
+              <li><a class="sidebar-dropdown" href="/logout"><i class="fas fa-power-off"></i><span>Logout</span></a></li>
+        </ul>
+      </div>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<div class="formulaire">
+  <h2 class="title-pred-stats">Prédiction du statut</h2>
+  <form id="myForm" action="/predict" method="POST" onsubmit="return validateForm()"onsubmit="return handleSubmit(onsubmit)">
+    <div class="champs">
+      <label for="input_data">Durée d'execution:</label><br>
+      <input type="text" id="duration" name="duration"><br><br>
+    </div>
+     <div class="champs2">
+      <label for="input_data"> Version:</label><br>
+      <input type="text" id="versions" name="versions"><br><br>
+    </div>
+    <div class="champs2">
+      <label for="input_data">Fréquence de lancement:</label><br>
+      <input type="text" id="frequence" name="frequence" ><br><br>
+    </div>
+    <div class="champs2">
+      <label for="context">Context:</label><br>
+      <div class="selectContainer">
+        <div class="input-group">
+          <select id="context" name="context">
+            <option disabled selected value="">selectionner un contexte</option>
+            <option>Default</option>
+            <option>Production</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <br>
+    <br>
+    <div class="prédire">
+      <input type="submit" value="Submit" class="btn btn-secondary" >
+      {% if prediction_text == "['success']" %}
+          <img class="pred-img"src="../frontend/img/test.png" alt="Success Image">
+      {% elif prediction_text == "['failure']" %}
+          <img class="predS-img" src="/frontend/img/test2.png" alt="Failure Image">
+      {% endif %}
+      <input class="pred-texts">
+      <h3 class="predS">Statut Prédit:</h3>
+    </div>
+  </form>
+
+  
+      <div id="customAlert" class="custom-alert">
+        <div class="alert-content">
+          <div class="col-sm-12">
+            <div class="alert fade alert-simple alert-danger alert-dismissible text-left font__family-montserrat font__size-16 font__weight-light brk-library-rendered rendered show" role="alert" data-brk-library="component__alert">
+              <span id="customAlertMessage"></span>  
+              <button onclick="hideCustomAlert()" class="close font__size-18 custom-close-button" data-dismiss="alert">
+                <span aria-hidden="true">
+                    <i class="fa fa-times danger"></i>
+                </span>
+                <span class="sr-only">Close</span>
+              </button>   
+            </div>
+          </div>
+        </div>
+      </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script>
+    jQuery(function ($) {
+      $(".sidebar-dropdown > a").click(function (e) {
+        e.preventDefault();
+        var submenu = $(this).siblings(".sidebar-submenu");
+        if (submenu.is(":visible")) {
+          submenu.slideUp(200);
+          $(this).parent().removeClass("active");
+        } else {
+          submenu.slideDown(200);
+          $(this).parent().addClass("active");
+        }
+      });
+  
+      $("#close-sidebar").click(function () {
+        $(".page-wrapper").removeClass("toggled");
+      });
+  
+      $("#show-sidebar").click(function () {
+        $(".page-wrapper").addClass("toggled");
+      });
+    });
+  
+    function showCustomAlert(message) {
+      var customAlert = document.getElementById("customAlert");
+      customAlert.style.display = "block";
+      var customAlertMessage = document.getElementById("customAlertMessage");
+      customAlertMessage.innerHTML = message;
+    }
+  
+    function hideCustomAlert() {
+      var customAlert = document.getElementById("customAlert");
+      customAlert.style.display = "none";
+    }
+  
+    function validateForm() {
+      var duration = document.getElementById("duration").value;
+      var versions = document.getElementById("versions").value;
+      var frequence = document.getElementById("frequence").value;
+      var context = document.getElementById("context").value;
+  
+      if (duration === "" || versions === "" || frequence === "" || context === "") {
+        showCustomAlert("Veuillez remplir tous les champs");
+        return false;
+      }
+  
+      // Validate numeric fields
+      if (!isNumeric(duration) || !isFloat(versions) || !isNumeric(frequence)) {
+        showCustomAlert("Vérifiez que les 3 premiers champs sont numériques");
+        return false; // Prevent form submission
+      }
+  
+      return true; // Allow form submission
+    }
+  
+    function isNumeric(value) {
+      return /^\d+$/.test(value);
+    }
+  
+    function isString(value) {
+      return typeof value === "string";
+    }
+  
+    function isFloat(value) {
+      return /^\d+(\.\d+)?$/.test(value);
+    }
+
+  </script>
+   
+   
+</body>
+</html>

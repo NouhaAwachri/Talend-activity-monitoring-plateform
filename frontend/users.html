@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script> 
+    <link rel="stylesheet" type="text/css" href="../frontend/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="icon" href="/frontend/img/favicon1.png" type="image/x-icon">
+    <link rel="icon" href="/frontend/img/favicon1.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">        
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+  <div  class="container-fluid">
+      <img  class="LogoD "src="../frontend/img/DATARAISE.png">
+      <div class="page-wrapper toggled">
+        <nav id="sidebar" class="sidebar-wrapper">
+          <div class="sidebar-content">
+            <div class="sidebar-menu">
+              <ul>
+                    <li> <a class="sidebar-dropdown" href="/home"><i class="fas fa-atom"></i><span>HOME</span></a></li> 
+                    <li> <a class="sidebar-dropdown" href="/overview"><i class="fas fa-atom"></i><span>OverView Dashboard</span></a></li>
+                          <li class="sidebar-dropdown">
+                            <a href="#"><i class="fa fa-tachometer-alt"></i><span>Volet Historique</span></a>
+                            <div class="sidebar-submenu">
+                              <ul>
+                                <li><a href="/dashboard_execution">Overview Historique</a></li>
+                                <li><a href="/details_execution">Détails Historique</a></li>
+                              </ul>
+                            </div>
+                          </li>
+                          <li class="sidebar-dropdown">
+                            <a href="#"><i class="fa fa-tachometer-alt"></i><span>Volet Volumetrie</span></a>
+                            <div class="sidebar-submenu">
+                              <ul>
+                                <li><a href="/dashboard_volumetrie">Overview Volumetrie</a></li>
+                                <li><a href="/details_volumetrie">Détails Volumetrie</a></li>
+                              </ul>
+                            </div>
+                          </li>
+                          <li class="sidebar-dropdown">
+                            <a href="#"><i class="fa fa-tachometer-alt"></i><span>Volet logs</span></a>
+                            <div class="sidebar-submenu">
+                              <ul>
+                                <li><a href="/dashboard_log">Overview Logs</a></li>
+                                <li><a href="/details_logs">Détails Logs</a></li>
+                                <li><a href="/details_des_logs">Details Message Logs</a></li>
+                              </ul>
+                            </div>
+                          </li>
+                          <li class="sidebar-dropdown">
+                            <a href="#"><i class="fas fa-atom"></i><span>Prediction</span></a>
+                            <div class="sidebar-submenu">
+                            <ul>
+                                <li><a href="/prediction">Prédiction Statut</a></li>
+                                <li><a href="/prédiction_flux">Prédiction Flux traités</a></li>
+                            </ul>
+                          </div>
+                        </li> 
+                    <li><a class="sidebar-dropdown" href="/users"><i class="fas fa-users"></i><span>Gestion des utilisateurs</span></a></li>
+                    <li><a class="sidebar-dropdown" href="/logout"><i class="fas fa-power-off"></i><span>Logout</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+     </div>
+                <div class="container">
+                  <div class="crud-table clearfix">
+                    <div class="form-inline pull-right">
+                      <label for="searchNameInput" class="Search">
+                        <i class="fas fa-search"></i>Recherche avec le Nom :
+                      </label>
+                      <div class="form-group">
+                        <input type="text" id="searchNameInput" placeholder="Type name to search" class="form-control">
+                      </div>
+                      <button id="searchButton" class="btn btn-primary">Rechercher</button>
+                    </div>
+                    <div class="form-inline pull-right" id="right-align-container">
+                      <button id="add-button" class="btn btn-success add-button" data-toggle="modal" data-target="#addUserModal">
+                        <span>Ajouter un utilisateur</span>
+                      </button>
+                    </div>
+                
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th style="text-align: center;">Nom</th>
+                          <th style="text-align: center;">Email</th>
+                          <th style="text-align: center;">Mot de passe</th>
+                          <th></th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for user in users %}
+                        <tr class="text-center">
+                          <td id="username-field">{{ user.username }}</td>
+                          <td id="email-field">{{ user.email }}</td>
+                          <td id="password-field">{{ user.password }}</td>
+                          <td>
+                            <form method="POST" action="{{ url_for('users.delete', userid=user.userid) }}">
+                              <button class="btn btn-danger" type="submit" onclick="showCustomAlert('Voulez-vous vraiment supprimer cet utilisateur ?')">Supprimer</button>
+                            </form>
+                          </td>
+                          <td>
+                            <button class="btn btn-primary edit-button" data-toggle="modal" data-target="#editUserModal" data-user-id="{{ user.userid }}">Modifier</button>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            <!-- Edit User Modal -->
+            <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <h5 class="modal-title" id="editUserModalLabel">Modifier un utilisateur</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                      </div>
+                      <form id="editUserForm" method="POST">
+                          <div class="modal-body">
+                              <div class="form-group">
+                                  <label for="editUsername">Nom</label>
+                                  <input type="text" class="form-control" id="editUsername" name="username" required>
+                              </div>
+                              <div class="form-group">
+                                  <label for="editEmail">Email</label>
+                                  <input type="email" class="form-control" id="editEmail" name="email" pattern=".+@dataraise\.com$" title="Mail invalide !" required>
+                                  <small class="form-text text-muted">Le mail doit être de la forme example@dataraise.com.</small>
+                              </div>
+                              <div class="form-group">
+                                  <label for="editPassword">Mot de passe</label>
+                                  <input type="password" class="form-control" id="editPassword" name="password" minlength="8" required>
+                                  <i class="bi bi-eye" id="eyeIcon3" onclick="togglePasswordVisibility('password', 'eyeIcon3')" style="cursor: pointer;"></i>
+                                  <small class="form-text text-muted">Le mot de passe doit comporter au moins 8 caractères.</small>
+                              </div>
+                              <div class="form-group">
+                                <label for="editPassword">Confirmer le mot de passe</label>
+                                <input type="password" class="form-control" id="editPassword" name="confirm-password" minlength="8" required>
+                                <i class="bi bi-eye" id="eyeIcon4" onclick="togglePasswordVisibility('confirm-password', 'eyeIcon4')" style="cursor: pointer;"></i>
+                                <small class="form-text text-muted">Le mot de passe doit comporter au moins 8 caractères.</small>
+                              </div>
+                          </div> 
+                          <div class="modal-footer">
+                              <button type="submit" class="btn btn-primary">Enregistrer</button>
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+            </div>
+
+
+           <!-- Add User Modal -->
+     <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="addUserModalLabel">Ajouter un utilisateur</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <form id="addUserForm" method="POST" action="{{ url_for('users.add') }}">
+                  <div class="modal-body">
+                      <div class="form-group">
+                          <label for="addUsername">Nom</label>
+                          <input type="text" class="form-control" id="addUsername" name="username" required>
+                      </div>
+                      <div class="form-group">
+                          <label for="addEmail">Email</label>
+                          <input type="email" class="form-control" id="addEmail" name="email" pattern=".+@dataraise\.com$" title="Mail invalide." required>
+                          <small class="form-text text-muted">Le mail doit être de la forme example@dataraise.com.</small>
+                      </div>
+                      <div class="form-group">
+                        <label for="addPassword">Mot de passe</label>
+                        <input type="password" class="form-control" id="addPassword" name="passwordE" minlength="8" required>
+                        <i class="bi bi-eye" id="eyeIcon5" onclick="togglePasswordVisibility('passwordE', 'eyeIcon5')" style="cursor: pointer;"></i>
+                        <small class="form-text text-muted">Le mot de passe doit comporter au moins 8 caractères.</small>
+                    </div>
+                      <div class="form-group">
+                          <label for="confirmPassword">Confirmer le mot de passe</label>
+                          <div class="input-group">
+                              <input type="password" class="form-control" id="confirmPassword" name="confirm-passwordE" minlength="8" required>
+                              <i class="bi bi-eye" id="eyeIcon6" onclick="togglePasswordVisibility('confirm-passwordE', 'eyeIcon6')" style="cursor: pointer;"></i>
+                          </div>
+                          <small class="form-text text-muted">Le mot de passe doit comporter au moins 8 caractères.</small>
+                      </div>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="submit" class="btn btn-primary">Ajouter</button>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                  </div>
+              </form>
+          </div>
+      </div>
+    </div>
+
+  </div>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %} 
+  <div class="alerte_users">
+    <div  id="customAlert"class="alert alert-success ">
+     
+        {% for message in messages %}
+         <a class="message"> {{ message }}</a>
+          <button class="ok-button font__size-10 custom-ok-button" onclick="hideCustomAlert()">
+            <span aria-hidden="true">
+                <i class="fas fa-check-circle success"></i>
+            </span>
+            OK
+        </button>
+        <span class="sr-only">Close</span></button>
+        {% endfor %}
+      
+    </div>
+  </div>
+  {% endif %}
+{% endwith %}
+
+
+  
+<script>
+    var editButtons = document.querySelectorAll('.edit-button');
+
+    // Add click event listener to each edit button
+    editButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var userId = this.getAttribute('data-user-id');
+            var editForm = document.getElementById('editUserForm');
+            editForm.setAttribute('action', '/users/edit/' + userId);
+            editForm.style.display = 'block';
+        });
+    });
+
+    // Get the modal close button
+    var closeButton = document.querySelector('.modal .close');
+
+    // Add click event listener to the close button
+    closeButton.addEventListener('click', function() {
+        var editForm = document.getElementById('editUserForm');
+        editForm.style.display = 'none';
+    });
+    var searchButton = document.getElementById('searchButton');
+    searchButton.addEventListener('click', function() {
+        var searchNameInput = document.getElementById('searchNameInput');
+        var searchName = searchNameInput.value.trim().toLowerCase();
+
+        var tableRows = document.querySelectorAll('.table tbody tr');
+        for (var i = 0; i < tableRows.length; i++) {
+            var username = tableRows[i ].querySelector('td:nth-child(1)').textContent.toLowerCase();
+            if (username.includes(searchName)) {
+                tableRows[i].style.display = '';
+            } else {
+                tableRows[i].style.display = 'none';
+            }
+        }
+    });
+
+    jQuery(function ($) {
+  $(".sidebar-dropdown > a").click(function (e) {
+    e.preventDefault();
+    var submenu = $(this).siblings(".sidebar-submenu");
+    if (submenu.is(":visible")) {
+      submenu.slideUp(200);
+      $(this).parent().removeClass("active");
+    } else {
+      submenu.slideDown(200);
+      $(this).parent().addClass("active");
+    }
+  });
+
+  $("#close-sidebar").click(function () {
+    $(".page-wrapper").removeClass("toggled");
+  });
+
+  $("#show-sidebar").click(function () {
+    $(".page-wrapper").addClass("toggled");
+  });
+});
+
+function showCustomAlert() {
+  var customAlert = document.getElementById("customAlert");
+  customAlert.style.display = "block";
+  var customAlertMessage = document.getElementById("customAlertMessage");
+  customAlertMessage.innerHTML = "This is a custom alert!";
+}
+
+function hideCustomAlert() {
+  var customAlert = document.getElementById("customAlert");
+  customAlert.style.display = "none";
+}
+// 
+function togglePasswordVisibility(fieldId, iconId) {
+    var field = document.querySelector('input[name="' + fieldId + '"]');
+    var icon = document.getElementById(iconId);
+
+    if (field.type === "password") {
+        field.type = "text";
+        icon.classList.remove("bi-eye");
+        icon.classList.add("bi-eye-slash");
+    } else {
+        field.type = "password";
+        icon.classList.remove("bi-eye-slash");
+        icon.classList.add("bi-eye");
+    }
+}
+</script>       
+
+
+
+</body>
+</html>
+
